@@ -31,7 +31,11 @@ function App(props) {
 
       <ToDoList>
         {todos.map(todo => (
-          <ToDoItem key={todo.text} text={todo.text}/>
+          <ToDoItem
+            key={todo.text}
+            text={todo.text}
+            completed="todo.completed"
+          />
         ))}
       </ToDoList>
       
