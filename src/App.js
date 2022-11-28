@@ -9,7 +9,7 @@ import { CreateToDoButton } from "./CreateToDoButton";
 const todos = [
   {
     text: 'Cortar cebolla',
-    completed: false
+    completed: true
   },
   {
     text: 'Tomar el curso de intro a React',
@@ -34,7 +34,7 @@ function App(props) {
           <ToDoItem
             key={todo.text}
             text={todo.text}
-            completed="todo.completed"
+            completed={todo.completed}
           />
         ))}
       </ToDoList>
