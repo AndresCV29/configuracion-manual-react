@@ -13,7 +13,7 @@ const defaultToDos = [
   },
   {
     text: 'Tomar el curso de intro a React',
-    completed: true
+    completed: false
   },
   {
     text: 'Llorar con la llorona',
@@ -39,7 +39,19 @@ function App(props) {
       return toDoText.includes(searchedText)
     })
   }
-  
+
+  const completeToDo = (text) => {
+    const toDoIndex = toDos.findIndex(toDo => toDo.text === text)
+    const newToDos = [... toDos]
+    newToDos[toDoIndex].completed = true
+    setToDos(newToDos)
+  }
+  const DeleteToDo = (text) => {
+    const toDoIndex = toDos.findIndex(toDo => toDo.text === text)
+    const newToDos = [... toDos]
+    newToDos.splice(toDoIndex, 1)
+    setToDos(newToDos)
+  }
   return (
     <React.Fragment>
 
@@ -59,6 +71,8 @@ function App(props) {
             key={toDo.text}
             text={toDo.text}
             completed={toDo.completed}
+            onComplete={() => completeToDo(toDo.text)}
+            onDelete={() => DeleteToDo(toDo.text)}
           />
         ))}
       </ToDoList>
