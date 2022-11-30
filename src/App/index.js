@@ -16,20 +16,36 @@ import { AppUI } from "./AppUI";
   },
 ] */
 
-function App(props) {
-  const localStorageToDos = localStorage.getItem('ToDos_V1')
-
-  let parsedToDos
-
-  if (!localStorageToDos) {
-    localStorage.setItem('ToDos_V1', JSON.stringify([]))
-    parsedToDos = []
+function useLocalStorage (itemName, initialValue) {
+  const localStorageItem = localStorage.getItem(itemName)
+  
+  let parsedItem
+  
+  if (!localStorageItem) {
+    localStorage.setItem(itemName, JSON.stringify(initialValue))
+    parsedItem = []
   } else {
-    parsedToDos = JSON.parse(localStorageToDos)
+    parsedItem = JSON.parse(localStorageItem)
+  }
+  
+  const [item, setItem] = React.useState(parsedItem)
+
+  const saveItem = (newItem) => {
+    const stringifiedItem = JSON.stringify(newItem)
+    localStorage.setItem(itemName, stringifiedItem)
+    setItem(newItem)
   }
 
-  const [toDos, setToDos] = React.useState(parsedToDos)
+  return [
+    item,
+    saveItem
+  ]
+}
+
+function App(props) {
+  const [toDos, saveToDos] = useLocalStorage('ToDos_V1', []) 
   const [searchValue, setSearchValue] = React.useState('')
+
 
   const completedToDos = toDos.filter(toDo => toDo.completed === true).length
   const totalToDos = toDos.length
@@ -46,11 +62,6 @@ function App(props) {
     })
   }
 
-  const saveToDos = (newToDos) => {
-    const stringifiedToDos = JSON.stringify(newToDos)
-    localStorage.setItem('ToDos_V1', stringifiedToDos)
-    setToDos(newToDos)
-  }
 
   const completeToDo = (text) => {
     const toDoIndex = toDos.findIndex(toDo => toDo.text === text)
