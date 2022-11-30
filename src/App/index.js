@@ -1,7 +1,7 @@
 import React from "react";
 import { AppUI } from "./AppUI";
 
-const defaultToDos = [
+/* const defaultToDos = [
   {
     text: 'Cortar cebolla',
     completed: false
@@ -14,10 +14,21 @@ const defaultToDos = [
     text: 'Llorar con la llorona',
     completed: false
   },
-]
+] */
 
 function App(props) {
-  const [toDos, setToDos] = React.useState(defaultToDos)
+  const localStorageToDos = localStorage.getItem('ToDos_V1')
+
+  let parsedToDos
+
+  if (!localStorageToDos) {
+    localStorage.setItem('ToDos_V1', JSON.stringify([]))
+    parsedToDos = []
+  } else {
+    parsedToDos = JSON.parse(localStorageToDos)
+  }
+
+  const [toDos, setToDos] = React.useState(parsedToDos)
   const [searchValue, setSearchValue] = React.useState('')
 
   const completedToDos = toDos.filter(toDo => toDo.completed === true).length
@@ -35,17 +46,23 @@ function App(props) {
     })
   }
 
+  const saveToDos = (newToDos) => {
+    const stringifiedToDos = JSON.stringify(newToDos)
+    localStorage.setItem('ToDos_V1', stringifiedToDos)
+    setToDos(newToDos)
+  }
+
   const completeToDo = (text) => {
     const toDoIndex = toDos.findIndex(toDo => toDo.text === text)
     const newToDos = [... toDos]
     newToDos[toDoIndex].completed = true
-    setToDos(newToDos)
+    saveToDos(newToDos)
   }
   const DeleteToDo = (text) => {
     const toDoIndex = toDos.findIndex(toDo => toDo.text === text)
     const newToDos = [... toDos]
     newToDos.splice(toDoIndex, 1)
-    setToDos(newToDos)
+    saveToDos(newToDos)
   }
   return (
     <AppUI
