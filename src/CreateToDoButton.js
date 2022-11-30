@@ -3,7 +3,11 @@ import './CreateToDoButton.css'
 
 function CreateToDoButton (props) {
     return (
-        <button className="CreateToDoButton">+</button>
+        <button
+            className="CreateToDoButton"
+        >
+            +
+        </button>
     )
 }
 
