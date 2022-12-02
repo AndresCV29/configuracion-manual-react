@@ -17,33 +17,60 @@ import { AppUI } from "./AppUI";
 ] */
 
 function useLocalStorage (itemName, initialValue) {
-  const localStorageItem = localStorage.getItem(itemName)
+  const [error, setError] = React.useState(false)
+  const [loading, setLoading] = React.useState(true)
+  const [item, setItem] = React.useState(initialValue)
   
-  let parsedItem
+  React.useEffect(() => {
+    setTimeout(() => {
+
+      try {
+        const localStorageItem = localStorage.getItem(itemName)
+        
+        let parsedItem
+        
+        if (!localStorageItem) {
+          localStorage.setItem(itemName, JSON.stringify(initialValue))
+          parsedItem = []
+        } else {
+          parsedItem = JSON.parse(localStorageItem)
+        }
+        setItem(parsedItem)
+        setLoading(false)
+
+      } catch (error){
+        setError(error)
+      }
+    }, 500)
+  })
   
-  if (!localStorageItem) {
-    localStorage.setItem(itemName, JSON.stringify(initialValue))
-    parsedItem = []
-  } else {
-    parsedItem = JSON.parse(localStorageItem)
-  }
-  
-  const [item, setItem] = React.useState(parsedItem)
 
   const saveItem = (newItem) => {
-    const stringifiedItem = JSON.stringify(newItem)
-    localStorage.setItem(itemName, stringifiedItem)
-    setItem(newItem)
+    try {
+      const stringifiedItem = JSON.stringify(newItem)
+      localStorage.setItem(itemName, stringifiedItem)
+      setItem(newItem)
+
+    } catch (error) {
+        setError(error)
+    }
   }
 
-  return [
+  return {
     item,
-    saveItem
-  ]
+    saveItem,
+    loading,
+    error
+  }
 }
 
 function App(props) {
-  const [toDos, saveToDos] = useLocalStorage('ToDos_V1', []) 
+  const {
+    item: toDos,
+    saveItem: saveToDos,
+    loading,
+    error,
+  } = useLocalStorage('ToDos_V1', []) 
   const [searchValue, setSearchValue] = React.useState('')
 
 
@@ -77,6 +104,8 @@ function App(props) {
   }
   return (
     <AppUI
+      loading={loading}
+      error={error}
       totalToDos={totalToDos}
       completedToDos={completedToDos}
       searchValue={searchValue}

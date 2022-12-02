@@ -7,6 +7,8 @@ import { CreateToDoButton } from "../CreateToDoButton";
 
 
 function AppUI ({
+    loading,
+    error,
     totalToDos,
     completedToDos,
     searchValue,
@@ -29,6 +31,9 @@ function AppUI ({
         />
 
         <ToDoList>
+            {error && <p>Hubo un error - ❌</p>}
+            {loading && <p>Cargando ⏳ ...</p>}
+            {(!loading && !searchedToDos.length) && <p>Crea to primer To-Do 📝</p>}
             {searchedToDos.map(toDo => (
             <ToDoItem
                 key={toDo.text}
