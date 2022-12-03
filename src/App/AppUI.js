@@ -7,36 +7,35 @@ import { ToDoItem } from "../ToDoItem";
 import { CreateToDoButton } from "../CreateToDoButton";
 
 function AppUI () {
+    const {
+        error,
+        loading,
+        searchedToDos,
+        completeToDo,
+        deleteToDo
+    } = React.useContext(ToDoContext)
+
     return (
         <React.Fragment>
             <ToDoCounter/>
             <ToDoSearch/>
-            <ToDoContext.Consumer>
-                {({
-                    error,
-                    loading,
-                    searchedToDos,
-                    completeToDo,
-                    DeleteToDo
-                }) => (
-                    <ToDoList>
-                        {error && <p>Hubo un error - ❌</p>}
-                        {loading && <p>Cargando ⏳ ...</p>}
-                        {(!loading && !searchedToDos.length) && <p>Crea to primer To-Do 📝</p>}
 
-                        {searchedToDos.map(toDo => (
-                        <ToDoItem
-                            key={toDo.text}
-                            text={toDo.text}
-                            completed={toDo.completed}
-                            onComplete={() => completeToDo(toDo.text)}
-                            onDelete={() => DeleteToDo(toDo.text)}
-                        />
-                        ))}
-                    </ToDoList>
-                )}
-            </ToDoContext.Consumer>
-                       
+            <ToDoList>
+                {error && <p>Hubo un error - ❌</p>}
+                {loading && <p>Cargando ⏳ ...</p>}
+                {(!loading && !searchedToDos.length) && <p>Crea to primer To-Do 📝</p>}
+
+                {searchedToDos.map(toDo => (
+                <ToDoItem
+                    key={toDo.text}
+                    text={toDo.text}
+                    completed={toDo.completed}
+                    onComplete={() => completeToDo(toDo.text)}
+                    onDelete={() => deleteToDo(toDo.text)}
+                />
+                ))}
+            </ToDoList>
+
             <CreateToDoButton/>
         </React.Fragment>
     );
